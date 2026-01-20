@@ -31,12 +31,13 @@ The goal of Sakura Zen is to offer a more welcoming alternative, where the user 
 - Componentization for easy maintenance and scalability
 ---
 ♡  
-** 🛠️ Tech Stack **
+**🛠️ Tech Stack**
 React
 Vite
 Tailwind CSS
 Lucide Icons
-Vercel (deploy)
+Vercel deploy
+
 ---
 ⁠♡
 **📦 How to run the project locally**
