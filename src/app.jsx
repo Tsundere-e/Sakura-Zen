@@ -218,7 +218,6 @@ const MagazineHeader = memo(({ progress }) => (
         <div className="flex-1 relative bg-pink-100 min-h-[500px] md:min-h-full overflow-hidden group z-10">
         <img
         src="https://i.ibb.co/ynbjc8Wm/5413e8853f7d2bfd789c67e71395f3b6-removebg-preview.png"
-        className="w-[320px] h-[320px] object-contain drop-shadow-[0_40px_80px_rgba(244,114,182,0.6)]"
         className="absolute inset-0 w-full h-full object-cover object-center z-0"
         />
 
