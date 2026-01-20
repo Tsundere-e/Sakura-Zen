@@ -1,4 +1,5 @@
 #🌸 Sakura Zen
+---
 ![React](https://img.shields.io/badge/React-Frontend-61DAFB)
 ![UX/UI](https://img.shields.io/badge/UX%2FUI-Design-ffb7c5)
 ![Vite](https://img.shields.io/badge/Vite-Build-646CFF)
