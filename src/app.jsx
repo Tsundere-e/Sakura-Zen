@@ -112,10 +112,10 @@ const SakuraGulp = () => {
       <div className="relative w-[360px] h-[360px] pointer-events-none">
       <style>{`
         @keyframes gulp-spin-z {
-          0% { transform: scale(0) rotateY(0deg); opacity: 0; }
-          20% { transform: scale(1) rotateY(0deg); opacity: 1; }
-          80% { transform: scale(1) rotateY(360deg); opacity: 1; }
-          100% { transform: scale(0) rotateY(360deg); opacity: 0; }
+          0% { transform: scale(0) rotatez(0deg); opacity: 0; }
+          20% { transform: scale(1) rotatez(0deg); opacity: 1; }
+          80% { transform: scale(1) rotatez(360deg); opacity: 1; }
+          100% { transform: scale(0) rotatez(360deg); opacity: 0; }
         }
 
         .perspective { perspective: 800px; }
