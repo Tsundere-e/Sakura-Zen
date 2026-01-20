@@ -76,7 +76,8 @@ const FloatingPetals = () => (
 const SakuraGulp = () => {
   const [showAsset, setShowAsset] = useState(false);
   const [ripples, setRipples] = useState([]);
-  const audioRef = useRef(null);
+  const audioRef = useRef(null); 
+  const hasPlayedRef = useRef(false);
 
   const triggerEffect = useCallback(() => {
     if (!audioRef.current) {
@@ -102,7 +103,9 @@ const SakuraGulp = () => {
   }, []);
 
   useEffect(() => {
-    triggerEffect();
+  if (hasPlayedRef.current) return;
+  hasPlayedRef.current = true;
+  triggerEffect();
   }, [triggerEffect]);
 
   return (
@@ -177,14 +180,13 @@ const MagazineHeader = memo(({ progress }) => (
         
         <div className="relative">
         <h1 className="text-8xl md:text-[11rem] font-serif italic text-pink-950 leading-[0.75] mb-12 tracking-tighter text-glow">
-        S
+        Sakur
         <span className="relative inline-block">
           a
-          <span className="absolute -top-28 left-1/2 -translate-x-1/2 pointer-events-none">
+          <span className="absolute -top-32 left-1/2 -translate-x-1/2 pointer-events-none">
             <SakuraGulp />
           </span>
         </span>
-        kura
         <br />
           <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Zen.</span>
         </h1>
