@@ -111,7 +111,7 @@ const SakuraGulp = () => {
   return (
       <div className="relative w-[360px] h-[360px] pointer-events-none">
       <style>{`
-        @keyframes gulp-spin-y {
+        @keyframes gulp-spin-z {
           0% { transform: scale(0) rotateY(0deg); opacity: 0; }
           20% { transform: scale(1) rotateY(0deg); opacity: 1; }
           80% { transform: scale(1) rotateY(360deg); opacity: 1; }
@@ -121,7 +121,7 @@ const SakuraGulp = () => {
         .perspective { perspective: 800px; }
 
         .animate-flower {
-          animation: gulp-spin-y 4s ease-in-out forwards;
+          animation: gulp-spin-z 4s ease-in-out forwards;
           transform-style: preserve-3d;
         }
 
