@@ -71,6 +71,92 @@ const FloatingPetals = () => (
   </div>
 );
 
+// --- Decorative flower ---
+
+const SakuraGulp = () => {
+  const [showAsset, setShowAsset] = useState(false);
+  const [ripples, setRipples] = useState([]);
+  const audioRef = useRef(null);
+
+  const triggerEffect = useCallback(() => {
+    if (!audioRef.current) {
+      audioRef.current = new Audio(
+        'https://assets.mixkit.co/active_storage/sfx/1120/1120-preview.mp3'
+      );
+      audioRef.current.volume = 0.4;
+    }
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch(() => {});
+
+    setShowAsset(true);
+    const id = Date.now();
+    setRipples(r => [...r, id]);
+
+    setTimeout(() => {
+      setRipples(r => r.filter(x => x !== id));
+    }, 2000);
+
+    setTimeout(() => {
+      setShowAsset(false);
+    }, 4000);
+  }, []);
+
+  useEffect(() => {
+    triggerEffect();
+    const i = setInterval(triggerEffect, 6500);
+    return () => clearInterval(i);
+  }, [triggerEffect]);
+
+  return (
+    <div className="relative w-[220px] h-[220px] pointer-events-none">
+      <style>{`
+        @keyframes gulp-spin-y {
+          0% { transform: scale(0) rotateY(0deg); opacity: 0; }
+          20% { transform: scale(1) rotateY(0deg); opacity: 1; }
+          80% { transform: scale(1) rotateY(360deg); opacity: 1; }
+          100% { transform: scale(0) rotateY(360deg); opacity: 0; }
+        }
+
+        .perspective { perspective: 800px; }
+
+        .animate-flower {
+          animation: gulp-spin-y 4s ease-in-out forwards;
+          transform-style: preserve-3d;
+        }
+
+        @keyframes water-ripple {
+          0% { transform: scale(0.4); opacity: 0; }
+          100% { transform: scale(2.8); opacity: 0; }
+        }
+
+        .ripple {
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          border: 3px solid rgba(244,114,182,0.5);
+          animation: water-ripple 2s ease-out forwards;
+        }
+      `}</style>
+
+      {ripples.map(id => (
+        <div key={id} className="ripple" />
+      ))}
+
+      {showAsset && (
+        <div className="perspective flex items-center justify-center">
+          <div className="animate-flower">
+            <img
+              src="https://i.ibb.co/ynbjc8Wm/5413e8853f7d2bfd789c67e71395f3b6-removebg-preview.png"
+              alt=""
+              className="w-32 h-32 object-contain drop-shadow-[0_20px_40px_rgba(244,114,182,0.5)]"
+            />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // --- Sub-Components ---
 
 const MagazineHeader = memo(({ progress }) => (
@@ -91,11 +177,17 @@ const MagazineHeader = memo(({ progress }) => (
           </span>
         </div>
         
+        <div className="relative">
         <h1 className="text-8xl md:text-[11rem] font-serif italic text-pink-950 leading-[0.75] mb-12 tracking-tighter text-glow">
           Sakura <br /> 
           <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Zen.</span>
         </h1>
-        
+
+        {/* ✨ ANIMATION GOES HERE ✨ */}
+        <div className="absolute -right-20 top-1/2 -translate-y-1/2 pointer-events-none">
+        <SakuraGulp />
+        </div>
+        </div>
         <div className="max-w-md relative">
           <div className="absolute -left-6 top-0 bottom-0 w-1.5 bg-pink-500 rounded-full" />
           <p className="text-pink-900 font-black leading-tight mb-12 text-2xl uppercase italic tracking-tight">
