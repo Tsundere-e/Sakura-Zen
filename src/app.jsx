@@ -122,7 +122,7 @@ const MagazineHeader = memo(({ progress }) => (
 
       <div className="flex-1 relative bg-pink-100 min-h-[500px] md:min-h-full overflow-hidden group">
         <img 
-          src="https://ibb.co/k6gkt0nV" 
+          src="https://i.ibb.co/3YyGnWX5/download.png" 
           className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 border-[30px] border-white/10 group-hover:border-white/20 transition-all pointer-events-none" />
