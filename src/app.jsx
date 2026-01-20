@@ -177,7 +177,15 @@ const MagazineHeader = memo(({ progress }) => (
         
         <div className="relative">
         <h1 className="text-8xl md:text-[11rem] font-serif italic text-pink-950 leading-[0.75] mb-12 tracking-tighter text-glow">
-          Sakura <br /> 
+        S
+        <span className="relative inline-block">
+          a
+          <span className="absolute -top-28 left-1/2 -translate-x-1/2 pointer-events-none">
+            <SakuraGulp />
+          </span>
+        </span>
+        kura
+        <br />
           <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Zen.</span>
         </h1>
 
