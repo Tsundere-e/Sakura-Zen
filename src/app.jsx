@@ -87,19 +87,19 @@ const MagazineHeader = memo(({ progress }) => (
         <div className="flex items-center gap-4 mb-6">
           <Zap className="text-pink-500 fill-pink-500" size={16} />
           <span className="text-pink-500 font-black tracking-[0.5em] text-[13px] uppercase">
-            Hyper-Focus • 2026 Edition
+            Tsundere-Creation • 2026 Edition
           </span>
         </div>
         
         <h1 className="text-8xl md:text-[11rem] font-serif italic text-pink-950 leading-[0.75] mb-12 tracking-tighter text-glow">
-          Stay <br /> 
-          <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Wild.</span>
+          Sakura <br /> 
+          <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Zen.</span>
         </h1>
         
         <div className="max-w-md relative">
           <div className="absolute -left-6 top-0 bottom-0 w-1.5 bg-pink-500 rounded-full" />
           <p className="text-pink-900 font-black leading-tight mb-12 text-2xl uppercase italic tracking-tight">
-            Productivity isn't a chore. <br/> It's an aesthetic evolution.
+            Good mood, mental looseness <br/> for creative problem-solving .
           </p>
           
           <div className="flex items-center gap-8">
@@ -123,7 +123,6 @@ const MagazineHeader = memo(({ progress }) => (
       <div className="flex-1 relative bg-pink-100 min-h-[500px] md:min-h-full overflow-hidden group">
         <img 
           src="https://ibb.co/k6gkt0nV" 
-          alt="Zen Artwork"
           className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 border-[30px] border-white/10 group-hover:border-white/20 transition-all pointer-events-none" />
@@ -149,7 +148,7 @@ const TaskItem = memo(({ task, onToggle, onDelete }) => (
     
     <div className="flex-1 min-w-0">
       <div className="flex items-center gap-4 mb-2">
-        <span className={STYLES.badge}>{task.completed ? 'Conquered' : 'Active'}</span>
+        <span className={STYLES.badge}>{task.completed ? 'Done' : 'On demand'}</span>
         <Wind size={14} className="text-pink-300" />
       </div>
       <p className={`text-2xl font-black transition-all duration-300 truncate tracking-tight ${task.completed ? 'text-pink-400 line-through' : 'text-pink-950'}`}>
@@ -168,9 +167,9 @@ const TaskItem = memo(({ task, onToggle, onDelete }) => (
 
 const App = () => {
   const [tasks, setTasks] = useState([
-    { id: 1, title: "CRUSH THE DAILY SPRINT", completed: false },
-    { id: 2, title: "VISUALIZE THE PINK FUTURE", completed: true },
-    { id: 3, title: "MEDITATE ON THE CHAOS", completed: false }
+    { id: 1, title: "Defining goals and strategy.", completed: false },
+    { id: 2, title: "Strategic, high-impact work ", completed: true },
+    { id: 3, title: "for creative problem-solving ", completed: false }
   ]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
@@ -227,11 +226,11 @@ const App = () => {
             <div className="bg-pink-950 rounded-[4rem] p-14 text-white relative overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.4)]">
               <Sparkles className="text-pink-500 mb-10 animate-pulse" size={48} />
               <p className="text-3xl font-serif italic mb-10 leading-tight">
-                “Discipline is the bridge between goals and accomplishment.”
+                “Place demanding tasks during your peak times and easy tasks during troughs.”
               </p>
               <div className="flex items-center gap-4">
                 <div className="w-10 h-1 bg-pink-500" />
-                <span className="text-xs uppercase tracking-[0.5em] font-black text-pink-500">Jim Rohn</span>
+                <span className="text-xs uppercase tracking-[0.5em] font-black text-pink-500">Sakura Zen</span>
               </div>
               <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-pink-500/20 rounded-full blur-[100px]" />
             </div>
