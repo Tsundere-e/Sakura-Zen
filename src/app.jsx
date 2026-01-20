@@ -109,7 +109,7 @@ const SakuraGulp = () => {
   }, [triggerEffect]);
 
   return (
-    <div className="relative w-[220px] h-[220px] pointer-events-none">
+      <div className="relative w-[360px] h-[360px] pointer-events-none">
       <style>{`
         @keyframes gulp-spin-y {
           0% { transform: scale(0) rotateY(0deg); opacity: 0; }
@@ -183,18 +183,13 @@ const MagazineHeader = memo(({ progress }) => (
         Sakur
         <span className="relative inline-block">
           a
-          <span className="absolute -top-32 left-1/2 -translate-x-1/2 pointer-events-none">
+          <span className="absolute top-1/2 left-1/2 -translate-x-1/2 translate-y-8 pointer-events-none">
             <SakuraGulp />
           </span>
         </span>
         <br />
           <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Zen.</span>
         </h1>
-
-        {/* ✨ ANIMATION GOES HERE ✨ */}
-        <div className="absolute -right-20 top-1/2 -translate-y-1/2 pointer-events-none">
-        <SakuraGulp />
-        </div>
         </div>
         <div className="max-w-md relative">
           <div className="absolute -left-6 top-0 bottom-0 w-1.5 bg-pink-500 rounded-full" />
@@ -221,10 +216,11 @@ const MagazineHeader = memo(({ progress }) => (
       </div>
 
       <div className="flex-1 relative bg-pink-100 min-h-[500px] md:min-h-full overflow-hidden group">
-        <img 
-          src="https://i.ibb.co/3YyGnWX5/download.png" 
-          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+        <img
+        src="https://i.ibb.co/ynbjc8Wm/5413e8853f7d2bfd789c67e71395f3b6-removebg-preview.png"
+        className="w-[320px] h-[320px] object-contain drop-shadow-[0_40px_80px_rgba(244,114,182,0.6)]"
         />
+
         <div className="absolute inset-0 border-[30px] border-white/10 group-hover:border-white/20 transition-all pointer-events-none" />
       </div>
     </div>
