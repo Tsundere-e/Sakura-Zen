@@ -147,7 +147,7 @@ const SakuraGulp = () => {
         <div className="perspective flex items-center justify-center">
           <div className="animate-flower">
             <img
-              src="https://i.ibb.co/ynbjc8Wm/5413e8853f7d2bfd789c67e71395f3b6-removebg-preview.png"
+              src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaWc0dXUxenhzZnRleXZxZnpnbGJvMDN1eDl2d203N3ZkM2FkbTJ2cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/UX08NIIrWJ6CfZ0NUc/giphy.gif"
               alt=""
               className="w-56 h-56 object-contain drop-shadow-[0_30px_60px_rgba(244,114,182,0.5)]"
             />
