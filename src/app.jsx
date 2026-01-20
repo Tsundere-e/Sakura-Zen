@@ -103,8 +103,6 @@ const SakuraGulp = () => {
 
   useEffect(() => {
     triggerEffect();
-    const i = setInterval(triggerEffect, 6500);
-    return () => clearInterval(i);
   }, [triggerEffect]);
 
   return (
@@ -148,7 +146,7 @@ const SakuraGulp = () => {
             <img
               src="https://i.ibb.co/ynbjc8Wm/5413e8853f7d2bfd789c67e71395f3b6-removebg-preview.png"
               alt=""
-              className="w-32 h-32 object-contain drop-shadow-[0_20px_40px_rgba(244,114,182,0.5)]"
+              className="w-56 h-56 object-contain drop-shadow-[0_30px_60px_rgba(244,114,182,0.5)]"
             />
           </div>
         </div>
