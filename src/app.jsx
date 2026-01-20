@@ -13,10 +13,6 @@ import {
   CloudRain
 } from 'lucide-react';
 
-/**
- * Componente Visual: Pétala de Sakura
- * Usado para criar a atmosfera estética do dashboard.
- */
 const SakuraPetal = ({ className }) => (
   <svg className={`absolute opacity-20 pointer-events-none ${className}`} viewBox="0 0 100 100" fill="currentColor">
     <path d="M50 0C50 0 80 30 80 60C80 82 66 100 50 100C34 100 20 82 20 60C20 30 50 0 50 0Z" />
@@ -26,7 +22,6 @@ const SakuraPetal = ({ className }) => (
 const API_URL = 'https://jsonplaceholder.typicode.com/todos';
 
 const App = () => {
-  // Estados da Aplicação
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,13 +30,12 @@ const App = () => {
   const [isAdding, setIsAdding] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
-  // Função para procurar tarefas da API
   const fetchTasks = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await fetch(`${API_URL}?_limit=8`);
-      if (!response.ok) throw new Error('Não foi possível conectar ao Jardim Zen.');
+      if (!response.ok) throw new Error('Could not connect to the Zen Garden.');
       const data = await response.json();
       setTasks(data);
     } catch (err) {
@@ -55,7 +49,6 @@ const App = () => {
     fetchTasks();
   }, [fetchTasks]);
 
-  // Handlers de Interação
   const toggleTask = (id) => {
     setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
   };
@@ -77,7 +70,6 @@ const App = () => {
     setIsAdding(false);
   };
 
-  // Lógica de Filtro e Progresso (Memoized)
   const filteredTasks = useMemo(() => {
     return tasks.filter(task => {
       const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -98,10 +90,10 @@ const App = () => {
       <div className="min-h-screen bg-[#FFF5F7] flex items-center justify-center p-4">
         <div className="bg-white p-8 rounded-3xl shadow-xl text-center max-w-md border border-pink-100">
           <CloudRain size={48} className="mx-auto text-pink-400 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Chuva no Jardim</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Rain in the Garden</h2>
           <p className="text-gray-500 mb-6">{error}</p>
           <button onClick={fetchTasks} className="px-8 py-3 bg-pink-400 text-white rounded-full hover:bg-pink-500 transition-all font-medium">
-            Tentar novamente
+            Try again
           </button>
         </div>
       </div>
@@ -110,7 +102,6 @@ const App = () => {
 
   return (
     <div className="min-h-screen bg-[#FFF5F7] text-gray-800 font-sans selection:bg-pink-200 overflow-x-hidden relative">
-      {/* Elementos Decorativos */}
       <SakuraPetal className="w-12 h-12 text-pink-300 top-10 left-[10%] animate-pulse" />
       <SakuraPetal className="w-8 h-8 text-pink-200 top-40 right-[15%] rotate-45" />
       <SakuraPetal className="w-16 h-16 text-pink-100 bottom-20 left-[5%] -rotate-12" />
@@ -120,17 +111,16 @@ const App = () => {
           <div>
             <div className="flex items-center gap-2 text-pink-500 font-bold tracking-widest text-sm mb-2">
               <Sparkles size={16} />
-              <span>FASE DE FLORAÇÃO</span>
+              <span>BLOOMING PHASE</span>
             </div>
             <h1 className="text-5xl font-black text-gray-900 tracking-tight">
               Sakura <span className="text-pink-400">Zen</span>
             </h1>
           </div>
           
-          {/* Barra de Progresso Circular/Horizontal */}
           <div className="bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-white/80 shadow-sm min-w-[200px]">
             <div className="flex justify-between items-end mb-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Progresso Diário</span>
+              <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Daily Progress</span>
               <span className="text-lg font-black text-pink-500">{progress}%</span>
             </div>
             <div className="w-full h-2 bg-pink-100 rounded-full overflow-hidden">
@@ -146,12 +136,11 @@ const App = () => {
       <main className="max-w-5xl mx-auto px-6 pb-20 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Sidebar de Navegação */}
           <aside className="lg:col-span-4 space-y-6">
             <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-pink-50">
               <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
                 <Calendar size={18} className="text-pink-400" />
-                Filtros Zen
+                Zen Filters
               </h3>
               <nav className="space-y-2">
                 {['all', 'pending', 'completed'].map((f) => (
@@ -164,7 +153,7 @@ const App = () => {
                         : 'hover:bg-pink-50 text-gray-500'
                     }`}
                   >
-                    <span className="capitalize">{f === 'all' ? 'Tudo' : f === 'pending' ? 'Em Crescimento' : 'Florescido'}</span>
+                    <span className="capitalize">{f === 'all' ? 'All' : f === 'pending' ? 'Growing' : 'Bloomed'}</span>
                     <ChevronRight size={14} className={filter === f ? 'opacity-100' : 'opacity-0'} />
                   </button>
                 ))}
@@ -173,21 +162,20 @@ const App = () => {
 
             <div className="bg-gradient-to-br from-pink-400 to-rose-400 rounded-[2rem] p-8 text-white shadow-lg relative overflow-hidden group">
               <Flower className="absolute -right-4 -bottom-4 w-32 h-32 opacity-20 rotate-12 group-hover:rotate-45 transition-transform duration-700" />
-              <h4 className="text-xl font-bold mb-2 relative z-10">Dica Zen</h4>
+              <h4 className="text-xl font-bold mb-2 relative z-10">Zen Tip</h4>
               <p className="text-pink-50 text-sm leading-relaxed relative z-10 italic">
-                "Uma pétala de cada vez. Não apresses a tua própria estação de floração."
+                "One petal at a time. Do not rush your own blooming season."
               </p>
             </div>
           </aside>
 
-          {/* Área Principal de Conteúdo */}
           <div className="lg:col-span-8 space-y-6">
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-pink-300" size={18} />
                 <input 
                   type="text"
-                  placeholder="Procurar uma tarefa..."
+                  placeholder="Search for a task..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full pl-12 pr-6 py-4 bg-white rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-pink-300 outline-none transition-all placeholder:text-pink-200"
@@ -198,34 +186,32 @@ const App = () => {
                 className="px-6 py-4 bg-gray-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-all shadow-lg active:scale-95"
               >
                 <Plus size={20} />
-                <span>Nova Tarefa</span>
+                <span>New Task</span>
               </button>
             </div>
 
-            {/* Modal/Formulário de Adição */}
             {isAdding && (
               <form onSubmit={addTask} className="bg-white p-6 rounded-[2rem] shadow-md border-2 border-pink-200 animate-in fade-in slide-in-from-top-4 duration-300">
                 <input 
                   autoFocus
                   type="text"
-                  placeholder="Qual é o teu próximo objetivo?"
+                  placeholder="What is your next goal?"
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
                   className="w-full text-xl font-medium border-none focus:ring-0 mb-4 placeholder:text-gray-300"
                 />
                 <div className="flex justify-end gap-3">
-                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 text-gray-400 font-bold">Cancelar</button>
-                  <button type="submit" className="px-6 py-2 bg-pink-500 text-white rounded-xl font-bold shadow-pink-100 shadow-lg">Plantar Semente</button>
+                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 text-gray-400 font-bold">Cancel</button>
+                  <button type="submit" className="px-6 py-2 bg-pink-500 text-white rounded-xl font-bold shadow-pink-100 shadow-lg">Plant Seed</button>
                 </div>
               </form>
             )}
 
-            {/* Lista de Tarefas */}
             <div className="space-y-4">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-20 text-pink-300">
                   <Loader2 className="animate-spin mb-4" size={32} />
-                  <p className="font-medium">A organizar as pétalas...</p>
+                  <p className="font-medium">Arranging the petals...</p>
                 </div>
               ) : filteredTasks.map((task) => (
                 <div 
@@ -259,7 +245,7 @@ const App = () => {
               {!isLoading && filteredTasks.length === 0 && (
                 <div className="text-center py-20 bg-white/40 rounded-[2rem] border-2 border-dashed border-pink-100">
                   <Flower className="mx-auto text-pink-200 mb-4" size={48} />
-                  <p className="text-pink-300 font-medium italic">Jardim vazio. Adiciona sementes de produtividade!</p>
+                  <p className="text-pink-300 font-medium italic">Empty garden. Add seeds of productivity!</p>
                 </div>
               )}
             </div>
