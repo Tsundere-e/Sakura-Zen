@@ -1,257 +1,314 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { 
   Flower, 
   CheckCircle2, 
-  AlertCircle, 
   Search, 
   Plus, 
   Loader2, 
   Trash2,
   ChevronRight,
   Sparkles,
-  Calendar,
-  CloudRain
+  Heart,
+  Wind,
+  Zap
 } from 'lucide-react';
 
-const SakuraPetal = ({ className }) => (
-  <svg className={`absolute opacity-20 pointer-events-none ${className}`} viewBox="0 0 100 100" fill="currentColor">
-    <path d="M50 0C50 0 80 30 80 60C80 82 66 100 50 100C34 100 20 82 20 60C20 30 50 0 50 0Z" />
-  </svg>
+// --- Styles & Animation ---
+
+const CSS_ANIMATIONS = `
+  @keyframes float-slow {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(20px, -30px) rotate(10deg); }
+  }
+  @keyframes petal-fall {
+    0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(110vh) translateX(100px) rotate(360deg); opacity: 0; }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-float { animation: float-slow 10s ease-in-out infinite; }
+  .animate-petal { animation: petal-fall 15s linear infinite; }
+  .animate-marquee { animation: marquee 20s linear infinite; }
+  
+  .pink-pattern-bg {
+    background-color: #fdf2f8;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f9a8d4' fill-opacity='0.15'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  .text-glow {
+    text-shadow: 0 0 15px rgba(244, 114, 182, 0.4);
+  }
+`;
+
+const STYLES = {
+  container: "min-h-screen pink-pattern-bg text-pink-900 font-sans selection:bg-pink-500 selection:text-white overflow-x-hidden",
+  glassCard: "bg-white/70 backdrop-blur-xl rounded-[3rem] border-2 border-white shadow-[0_25px_60px_-15px_rgba(244,114,182,0.3)] transition-all duration-500",
+  input: "w-full pl-14 pr-6 py-6 bg-white/90 rounded-[2rem] border-2 border-pink-100 outline-none transition-all placeholder:text-pink-200 focus:border-pink-500 focus:shadow-[0_0_30px_rgba(244,114,182,0.2)] text-pink-950 font-bold",
+  buttonPrimary: "group relative px-10 py-6 bg-pink-500 text-white rounded-[2rem] text-xs font-black uppercase tracking-[0.3em] overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-xl shadow-pink-300",
+  badge: "px-4 py-1.5 rounded-full bg-pink-600 text-[10px] font-black text-white uppercase tracking-widest"
+};
+
+// --- Decorative Elements ---
+
+const FloatingPetals = () => (
+  <div className="fixed inset-0 pointer-events-none z-0">
+    {[...Array(8)].map((_, i) => (
+      <Flower 
+        key={i} 
+        className="absolute animate-petal text-pink-300 opacity-20"
+        size={Math.random() * 20 + 10}
+        style={{
+          left: `${Math.random() * 100}%`,
+          animationDelay: `${Math.random() * 15}s`,
+          animationDuration: `${Math.random() * 10 + 10}s`
+        }}
+      />
+    ))}
+  </div>
 );
 
-const API_URL = 'https://jsonplaceholder.typicode.com/todos';
+// --- Sub-Components ---
+
+const MagazineHeader = memo(({ progress }) => (
+  <header className="relative w-full bg-white border-b-[12px] border-pink-500 overflow-hidden">
+    {/* Marquee Background Text */}
+    <div className="absolute top-0 left-0 w-full overflow-hidden opacity-[0.03] select-none pointer-events-none py-4">
+      <div className="animate-marquee whitespace-nowrap text-[120px] font-black uppercase tracking-tighter">
+        SAKURA ZEN • SAKURA ZEN • SAKURA ZEN • SAKURA ZEN • SAKURA ZEN • SAKURA ZEN • SAKURA ZEN • SAKURA ZEN • 
+      </div>
+    </div>
+
+    <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row min-h-[650px] relative z-10">
+      <div className="flex-1 px-8 md:px-20 py-20 md:py-32 flex flex-col justify-center">
+        <div className="flex items-center gap-4 mb-6">
+          <Zap className="text-pink-500 fill-pink-500" size={16} />
+          <span className="text-pink-500 font-black tracking-[0.5em] text-[13px] uppercase">
+            Hyper-Focus • 2026 Edition
+          </span>
+        </div>
+        
+        <h1 className="text-8xl md:text-[11rem] font-serif italic text-pink-950 leading-[0.75] mb-12 tracking-tighter text-glow">
+          Stay <br /> 
+          <span className="not-italic font-black text-pink-500 inline-block hover:scale-110 transition-transform cursor-default">Wild.</span>
+        </h1>
+        
+        <div className="max-w-md relative">
+          <div className="absolute -left-6 top-0 bottom-0 w-1.5 bg-pink-500 rounded-full" />
+          <p className="text-pink-900 font-black leading-tight mb-12 text-2xl uppercase italic tracking-tight">
+            Productivity isn't a chore. <br/> It's an aesthetic evolution.
+          </p>
+          
+          <div className="flex items-center gap-8">
+             <div className="relative">
+                <svg className="w-24 h-24 rotate-[-90deg]">
+                    <circle cx="48" cy="48" r="40" fill="none" stroke="#fee2e2" strokeWidth="12" />
+                    <circle cx="48" cy="48" r="40" fill="none" stroke="#ec4899" strokeWidth="12" strokeDasharray="251.2" strokeDashoffset={251.2 - (251.2 * progress / 100)} strokeLinecap="round" className="transition-all duration-1000" />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center font-black text-pink-600 text-lg">
+                  {progress}%
+                </div>
+             </div>
+             <div>
+                <div className="text-[11px] font-black uppercase tracking-[0.3em] text-pink-400 mb-1">Status</div>
+                <div className="text-xl font-black text-pink-950">BLOOM LEVEL</div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex-1 relative bg-pink-100 min-h-[500px] md:min-h-full overflow-hidden group">
+        <img 
+          src="https://ibb.co/k6gkt0nV" 
+          alt="Zen Artwork"
+          className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
+        />
+        <div className="absolute inset-0 border-[30px] border-white/10 group-hover:border-white/20 transition-all pointer-events-none" />
+      </div>
+    </div>
+  </header>
+));
+
+const TaskItem = memo(({ task, onToggle, onDelete }) => (
+  <li className={`group animate-bloom flex items-center gap-8 p-8 ${STYLES.glassCard} ${
+    task.completed ? 'opacity-40 grayscale-[0.5] bg-pink-100/30' : 'hover:scale-[1.03] hover:shadow-pink-400/20'
+  }`}>
+    <button 
+      onClick={() => onToggle(task.id)}
+      className={`w-14 h-14 rounded-[1.5rem] border-4 transition-all flex items-center justify-center shadow-lg ${
+        task.completed 
+          ? 'bg-pink-500 border-pink-500 text-white rotate-12' 
+          : 'border-pink-200 bg-white text-transparent hover:border-pink-500 hover:scale-110'
+      }`}
+    >
+      <CheckCircle2 size={28} strokeWidth={3} className={task.completed ? 'scale-110' : 'scale-0'} />
+    </button>
+    
+    <div className="flex-1 min-w-0">
+      <div className="flex items-center gap-4 mb-2">
+        <span className={STYLES.badge}>{task.completed ? 'Conquered' : 'Active'}</span>
+        <Wind size={14} className="text-pink-300" />
+      </div>
+      <p className={`text-2xl font-black transition-all duration-300 truncate tracking-tight ${task.completed ? 'text-pink-400 line-through' : 'text-pink-950'}`}>
+        {task.title}
+      </p>
+    </div>
+
+    <button 
+      onClick={() => onDelete(task.id)}
+      className="p-5 text-pink-300 hover:text-white hover:bg-rose-500 rounded-3xl transition-all scale-75 opacity-0 group-hover:opacity-100 group-hover:scale-100"
+    >
+      <Trash2 size={24} />
+    </button>
+  </li>
+));
 
 const App = () => {
-  const [tasks, setTasks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [tasks, setTasks] = useState([
+    { id: 1, title: "CRUSH THE DAILY SPRINT", completed: false },
+    { id: 2, title: "VISUALIZE THE PINK FUTURE", completed: true },
+    { id: 3, title: "MEDITATE ON THE CHAOS", completed: false }
+  ]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const [isAdding, setIsAdding] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState('');
-
-  const fetchTasks = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(`${API_URL}?_limit=8`);
-      if (!response.ok) throw new Error('Could not connect to the Zen Garden.');
-      const data = await response.json();
-      setTasks(data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchTasks();
-  }, [fetchTasks]);
-
-  const toggleTask = (id) => {
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, completed: !t.completed } : t));
-  };
-
-  const deleteTask = (id) => {
-    setTasks(prev => prev.filter(t => t.id !== id));
-  };
-
-  const addTask = (e) => {
-    e.preventDefault();
-    if (!newTaskTitle.trim()) return;
-    const newTask = {
-      id: Date.now(),
-      title: newTaskTitle,
-      completed: false
-    };
-    setTasks([newTask, ...tasks]);
-    setNewTaskTitle('');
-    setIsAdding(false);
-  };
-
-  const filteredTasks = useMemo(() => {
-    return tasks.filter(task => {
-      const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesFilter = filter === 'all' 
-        ? true 
-        : filter === 'completed' ? task.completed : !task.completed;
-      return matchesSearch && matchesFilter;
-    });
-  }, [tasks, searchQuery, filter]);
 
   const progress = useMemo(() => {
     if (tasks.length === 0) return 0;
     return Math.round((tasks.filter(t => t.completed).length / tasks.length) * 100);
   }, [tasks]);
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-[#FFF5F7] flex items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-3xl shadow-xl text-center max-w-md border border-pink-100">
-          <CloudRain size={48} className="mx-auto text-pink-400 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Rain in the Garden</h2>
-          <p className="text-gray-500 mb-6">{error}</p>
-          <button onClick={fetchTasks} className="px-8 py-3 bg-pink-400 text-white rounded-full hover:bg-pink-500 transition-all font-medium">
-            Try again
-          </button>
-        </div>
-      </div>
-    );
-  }
+  const filteredTasks = tasks.filter(task => {
+    const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filter === 'all' ? true : filter === 'completed' ? task.completed : !task.completed;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
-    <div className="min-h-screen bg-[#FFF5F7] text-gray-800 font-sans selection:bg-pink-200 overflow-x-hidden relative">
-      <SakuraPetal className="w-12 h-12 text-pink-300 top-10 left-[10%] animate-pulse" />
-      <SakuraPetal className="w-8 h-8 text-pink-200 top-40 right-[15%] rotate-45" />
-      <SakuraPetal className="w-16 h-16 text-pink-100 bottom-20 left-[5%] -rotate-12" />
+    <div className={STYLES.container}>
+      <style>{CSS_ANIMATIONS}</style>
+      <FloatingPetals />
+      
+      <MagazineHeader progress={progress} />
 
-      <header className="pt-12 pb-8 px-6 max-w-5xl mx-auto relative z-10">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2 text-pink-500 font-bold tracking-widest text-sm mb-2">
-              <Sparkles size={16} />
-              <span>BLOOMING PHASE</span>
-            </div>
-            <h1 className="text-5xl font-black text-gray-900 tracking-tight">
-              Sakura <span className="text-pink-400">Zen</span>
-            </h1>
-          </div>
+      <main className="max-w-7xl mx-auto px-6 py-28 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
           
-          <div className="bg-white/60 backdrop-blur-md p-4 rounded-3xl border border-white/80 shadow-sm min-w-[200px]">
-            <div className="flex justify-between items-end mb-2">
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">Daily Progress</span>
-              <span className="text-lg font-black text-pink-500">{progress}%</span>
-            </div>
-            <div className="w-full h-2 bg-pink-100 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-pink-300 to-pink-500 transition-all duration-1000 ease-out"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-5xl mx-auto px-6 pb-20 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          <aside className="lg:col-span-4 space-y-6">
-            <div className="bg-white rounded-[2rem] p-6 shadow-sm border border-pink-50">
-              <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                <Calendar size={18} className="text-pink-400" />
-                Zen Filters
+          <aside className="lg:col-span-4 space-y-12">
+            <div className={`${STYLES.glassCard} p-10 overflow-hidden relative`}>
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Flower size={80} />
+              </div>
+              <h3 className="text-[14px] font-black mb-10 text-pink-600 uppercase tracking-[0.5em] border-b-4 border-pink-500 pb-4 inline-block">
+                Archive
               </h3>
-              <nav className="space-y-2">
-                {['all', 'pending', 'completed'].map((f) => (
+              <nav className="space-y-4">
+                {['all', 'pending', 'completed'].map((id) => (
                   <button
-                    key={f}
-                    onClick={() => setFilter(f)}
-                    className={`w-full text-left px-4 py-3 rounded-2xl text-sm font-medium transition-all flex items-center justify-between ${
-                      filter === f 
-                        ? 'bg-pink-500 text-white shadow-md shadow-pink-100' 
-                        : 'hover:bg-pink-50 text-gray-500'
+                    key={id}
+                    onClick={() => setFilter(id)}
+                    className={`w-full text-left px-8 py-6 rounded-[2rem] text-xs font-black transition-all flex items-center justify-between group ${
+                      filter === id 
+                        ? 'bg-pink-600 text-white shadow-2xl shadow-pink-400 -translate-y-1' 
+                        : 'text-pink-400 uppercase tracking-[0.3em] hover:bg-pink-50 hover:text-pink-600'
                     }`}
                   >
-                    <span className="capitalize">{f === 'all' ? 'All' : f === 'pending' ? 'Growing' : 'Bloomed'}</span>
-                    <ChevronRight size={14} className={filter === f ? 'opacity-100' : 'opacity-0'} />
+                    <span>{id === 'all' ? 'The Garden' : id === 'pending' ? 'Growing' : 'Bloomed'}</span>
+                    <ChevronRight size={18} className={`transition-transform ${filter === id ? 'translate-x-1' : 'opacity-0'}`} />
                   </button>
                 ))}
               </nav>
             </div>
-
-            <div className="bg-gradient-to-br from-pink-400 to-rose-400 rounded-[2rem] p-8 text-white shadow-lg relative overflow-hidden group">
-              <Flower className="absolute -right-4 -bottom-4 w-32 h-32 opacity-20 rotate-12 group-hover:rotate-45 transition-transform duration-700" />
-              <h4 className="text-xl font-bold mb-2 relative z-10">Zen Tip</h4>
-              <p className="text-pink-50 text-sm leading-relaxed relative z-10 italic">
-                "One petal at a time. Do not rush your own blooming season."
+            
+            <div className="bg-pink-950 rounded-[4rem] p-14 text-white relative overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.4)]">
+              <Sparkles className="text-pink-500 mb-10 animate-pulse" size={48} />
+              <p className="text-3xl font-serif italic mb-10 leading-tight">
+                “Discipline is the bridge between goals and accomplishment.”
               </p>
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-1 bg-pink-500" />
+                <span className="text-xs uppercase tracking-[0.5em] font-black text-pink-500">Jim Rohn</span>
+              </div>
+              <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-pink-500/20 rounded-full blur-[100px]" />
             </div>
           </aside>
 
-          <div className="lg:col-span-8 space-y-6">
-            <div className="flex flex-col sm:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-pink-300" size={18} />
+          <section className="lg:col-span-8 space-y-12">
+            <div className="flex flex-col md:flex-row gap-6 items-center">
+              <div className="relative flex-1 w-full group">
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-pink-400 group-focus-within:text-pink-600" size={24} />
                 <input 
                   type="text"
-                  placeholder="Search for a task..."
+                  placeholder="FIND YOUR FOCUS..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-6 py-4 bg-white rounded-2xl border-none shadow-sm focus:ring-2 focus:ring-pink-300 outline-none transition-all placeholder:text-pink-200"
+                  className={STYLES.input}
                 />
               </div>
-              <button 
-                onClick={() => setIsAdding(true)}
-                className="px-6 py-4 bg-gray-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-all shadow-lg active:scale-95"
-              >
-                <Plus size={20} />
-                <span>New Task</span>
+              <button onClick={() => setIsAdding(true)} className={STYLES.buttonPrimary}>
+                <div className="relative z-10 flex items-center gap-3">
+                  <Plus size={24} strokeWidth={4} />
+                  <span>PLANT IDEA</span>
+                </div>
+                <div className="absolute inset-0 bg-pink-400 translate-y-full group-hover:translate-y-0 transition-transform" />
               </button>
             </div>
 
             {isAdding && (
-              <form onSubmit={addTask} className="bg-white p-6 rounded-[2rem] shadow-md border-2 border-pink-200 animate-in fade-in slide-in-from-top-4 duration-300">
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (!newTaskTitle.trim()) return;
+                setTasks([{ id: Date.now(), title: newTaskTitle.toUpperCase(), completed: false }, ...tasks]);
+                setNewTaskTitle('');
+                setIsAdding(false);
+              }} className={`${STYLES.glassCard} p-12 animate-bloom relative overflow-hidden`}>
+                <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-500 to-rose-500" />
                 <input 
                   autoFocus
                   type="text"
-                  placeholder="What is your next goal?"
+                  placeholder="WHAT SHALL BLOOM?"
                   value={newTaskTitle}
                   onChange={(e) => setNewTaskTitle(e.target.value)}
-                  className="w-full text-xl font-medium border-none focus:ring-0 mb-4 placeholder:text-gray-300"
+                  className="w-full text-5xl font-black italic border-none focus:ring-0 mb-12 placeholder:text-pink-50 text-pink-950 bg-transparent outline-none tracking-tighter"
                 />
-                <div className="flex justify-end gap-3">
-                  <button type="button" onClick={() => setIsAdding(false)} className="px-4 py-2 text-gray-400 font-bold">Cancel</button>
-                  <button type="submit" className="px-6 py-2 bg-pink-500 text-white rounded-xl font-bold shadow-pink-100 shadow-lg">Plant Seed</button>
+                <div className="flex justify-end gap-10 items-center">
+                  <button type="button" onClick={() => setIsAdding(false)} className="text-sm font-black text-pink-300 uppercase tracking-widest hover:text-pink-600">Discard</button>
+                  <button type="submit" className="px-12 py-5 bg-pink-950 text-white rounded-[2rem] text-xs font-black uppercase tracking-widest hover:bg-black transition-all">Archive Entry</button>
                 </div>
               </form>
             )}
 
-            <div className="space-y-4">
-              {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-20 text-pink-300">
-                  <Loader2 className="animate-spin mb-4" size={32} />
-                  <p className="font-medium">Arranging the petals...</p>
-                </div>
-              ) : filteredTasks.map((task) => (
-                <div 
+            <ul className="space-y-8">
+              {filteredTasks.map(task => (
+                <TaskItem 
                   key={task.id} 
-                  className={`group flex items-center gap-4 bg-white p-5 rounded-[2rem] shadow-sm border border-transparent hover:border-pink-100 transition-all hover:shadow-md ${task.completed ? 'bg-white/50' : ''}`}
-                >
-                  <button 
-                    onClick={() => toggleTask(task.id)}
-                    className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all ${
-                      task.completed ? 'bg-emerald-500 text-white' : 'bg-pink-50 text-pink-400 hover:bg-pink-100'
-                    }`}
-                  >
-                    {task.completed ? <CheckCircle2 size={20} /> : <div className="w-2 h-2 rounded-full bg-pink-300" />}
-                  </button>
-                  
-                  <div className="flex-1">
-                    <p className={`font-bold transition-all ${task.completed ? 'text-gray-300 line-through' : 'text-gray-700'}`}>
-                      {task.title}
-                    </p>
-                  </div>
-
-                  <button 
-                    onClick={() => deleteTask(task.id)}
-                    className="p-2 text-gray-300 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-all hover:bg-rose-50 rounded-xl"
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
+                  task={task} 
+                  onToggle={(id) => setTasks(tasks.map(t => t.id === id ? {...t, completed: !t.completed} : t))}
+                  onDelete={(id) => setTasks(tasks.filter(t => t.id !== id))}
+                />
               ))}
-
-              {!isLoading && filteredTasks.length === 0 && (
-                <div className="text-center py-20 bg-white/40 rounded-[2rem] border-2 border-dashed border-pink-100">
-                  <Flower className="mx-auto text-pink-200 mb-4" size={48} />
-                  <p className="text-pink-300 font-medium italic">Empty garden. Add seeds of productivity!</p>
+              {filteredTasks.length === 0 && (
+                <div className="text-center py-40 border-8 border-dashed border-pink-200 rounded-[5rem]">
+                  <p className="text-5xl font-black text-pink-200 italic tracking-tighter uppercase opacity-50">Empty Space</p>
                 </div>
               )}
-            </div>
-          </div>
+            </ul>
+          </section>
         </div>
       </main>
+
+      <footer className="py-40 px-8 text-center bg-white border-t-[20px] border-pink-500 relative overflow-hidden">
+           <div className="absolute top-0 left-0 w-full h-full opacity-[0.02] pointer-events-none">
+              <Flower className="absolute -left-20 -top-20 w-[400px] h-[400px] rotate-45" />
+              <Flower className="absolute -right-20 -bottom-20 w-[400px] h-[400px] -rotate-45" />
+           </div>
+           <h2 className="text-8xl md:text-[10rem] font-serif italic text-pink-950 mb-6 tracking-tighter text-glow">Sakura Zen</h2>
+           <p className="text-sm font-black uppercase tracking-[1em] text-pink-500">Editorial Core — Est. 2026</p>
+      </footer>
     </div>
   );
 };
